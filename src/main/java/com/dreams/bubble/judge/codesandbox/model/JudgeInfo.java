@@ -1,4 +1,4 @@
-package com.dreams.bubble.model.dto.questionSubmit;
+package com.dreams.bubble.judge.codesandbox.model;
 
 import lombok.Data;
 
@@ -15,10 +15,10 @@ public class JudgeInfo {
     /**
      * 消耗内存(ms)
      */
-    private long memory;
+    private Long memory;
 
     /**
      * 消耗时间(KB)
      */
-    private long time;
+    private Long time;
 }

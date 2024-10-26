@@ -1,7 +1,7 @@
 package com.dreams.bubble.model.vo;
 
 import cn.hutool.json.JSONUtil;
-import com.dreams.bubble.model.dto.questionSubmit.JudgeInfo;
+import com.dreams.bubble.judge.codesandbox.model.JudgeInfo;
 import com.dreams.bubble.model.entity.QuestionSubmit;
 import lombok.Data;
 import org.springframework.beans.BeanUtils;

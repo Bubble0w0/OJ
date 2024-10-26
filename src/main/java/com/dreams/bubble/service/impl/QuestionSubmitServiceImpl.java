@@ -6,6 +6,7 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.dreams.bubble.common.ErrorCode;
 import com.dreams.bubble.constant.CommonConstant;
 import com.dreams.bubble.exception.BusinessException;
+import com.dreams.bubble.judge.JudgeService;
 import com.dreams.bubble.model.dto.question.QuestionQueryRequest;
 import com.dreams.bubble.model.dto.questionSubmit.QuestionSubmitAddRequest;
 import com.dreams.bubble.model.dto.questionSubmit.QuestionSubmitQueryRequest;
@@ -28,6 +29,7 @@ import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.aop.framework.AopContext;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -36,6 +38,7 @@ import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
 
 /**
@@ -51,6 +54,9 @@ public class QuestionSubmitServiceImpl extends ServiceImpl<QuestionSubmitMapper,
     private QuestionService questionService;
     @Resource
     private UserService userService;
+    @Resource
+    @Lazy
+    private JudgeService judgeService;
 
     /**
      * 提交题目
@@ -88,7 +94,12 @@ public class QuestionSubmitServiceImpl extends ServiceImpl<QuestionSubmitMapper,
         if (!save){
             throw new BusinessException(ErrorCode.SYSTEM_ERROR,"数据插入失败");
         }else {
-            return questionSubmit.getId();
+            Long questionSubmitId = questionSubmit.getId();
+            // 执行判题服务
+            CompletableFuture.runAsync(()->{
+                judgeService.doJudge(questionSubmitId);
+            });
+            return questionSubmitId;
         }
 
     }
